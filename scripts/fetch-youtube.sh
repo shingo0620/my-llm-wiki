@@ -36,7 +36,7 @@ fi
 echo "正在擷取: ${URL}" >&2
 
 # 使用 Python 取得逐字稿和影片資訊
-PARSED=$(python3 << 'PYEOF'
+PARSED=$(YOUTUBE_URL="${URL}" python3 << 'PYEOF'
 import sys, re, os, json
 
 url = os.environ.get("YOUTUBE_URL", "")

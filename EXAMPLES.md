@@ -165,7 +165,9 @@ domain: NLP
 **LLM 執行流程：**
 
 ```bash
-~/.claude/skills/llm-wiki/scripts/fetch-url.sh \
+# 偵測 skill 安裝位置
+SKILL_SCRIPTS=$(find ~/.claude/skills .claude/skills -path "*/llm-wiki/scripts/fetch-url.sh" 2>/dev/null | head -1 | xargs dirname 2>/dev/null)
+"${SKILL_SCRIPTS}/fetch-url.sh" \
   "https://lilianweng.github.io/posts/2023-06-23-agent/" \
   "./raw"
 # 輸出：./raw/llm-powered-autonomous-agents.md
@@ -180,7 +182,9 @@ domain: NLP
 **LLM 執行流程：**
 
 ```bash
-~/.claude/skills/llm-wiki/scripts/fetch-youtube.sh \
+# 偵測 skill 安裝位置
+SKILL_SCRIPTS=$(find ~/.claude/skills .claude/skills -path "*/llm-wiki/scripts/fetch-youtube.sh" 2>/dev/null | head -1 | xargs dirname 2>/dev/null)
+"${SKILL_SCRIPTS}/fetch-youtube.sh" \
   "https://www.youtube.com/watch?v=zjkBMFhNj_g" \
   "./raw"
 # 輸出：./raw/yt-intro-to-large-language-models.md
