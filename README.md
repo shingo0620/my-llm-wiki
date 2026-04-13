@@ -79,21 +79,59 @@ Pages use `[[wikilinks]]` for cross-referencing. Recommended viewer: [Obsidian](
 
 ## Installation
 
-### As a Claude Code skill
+### Option 1: Clone as a Claude Code skill (recommended)
 
 ```bash
-# Copy to your skills directory
-cp -r llm-wiki ~/.claude/skills/
-
-# Or clone directly
 git clone git@github.com:shingo0620/my-llm-wiki.git ~/.claude/skills/llm-wiki
 ```
 
-### Dependencies
+After cloning, the skill is immediately available. Use `/llm-wiki init` in any Claude Code session to create your first knowledge base.
 
-- **Python 3** — for fetch scripts
-- **curl** — for markdown.new API
-- **youtube-transcript-api** — auto-installed on first YouTube ingest
+### Option 2: Copy into an existing skills directory
+
+```bash
+cp -r llm-wiki ~/.claude/skills/
+```
+
+### Option 3: Install as a Claude Code plugin
+
+If your Claude Code version supports plugin installation:
+
+```bash
+claude plugin add shingo0620/my-llm-wiki
+```
+
+### Verify installation
+
+In a Claude Code session, type `/llm-wiki` — if the skill loads, you're ready. Then run `/llm-wiki init` to create your first knowledge base.
+
+### Prerequisites
+
+| Dependency | Required for | Notes |
+|------------|-------------|-------|
+| **Python 3** | fetch scripts | Typically pre-installed on macOS/Linux |
+| **curl** | URL ingestion via markdown.new | Typically pre-installed |
+| **youtube-transcript-api** | YouTube ingestion | Auto-installed on first use (via `pip` or `uv`) |
+
+### Quick Start
+
+```bash
+# 1. Install the skill
+git clone git@github.com:shingo0620/my-llm-wiki.git ~/.claude/skills/llm-wiki
+
+# 2. Open Claude Code and initialize a knowledge base
+#    In Claude Code, type:
+#    /llm-wiki init
+
+# 3. Place source files in raw/ or provide URLs
+#    /llm-wiki ingest
+
+# 4. Query your knowledge base
+#    /llm-wiki query
+
+# 5. Periodic health check
+#    /llm-wiki lint
+```
 
 ## Scripts
 
@@ -124,9 +162,20 @@ llm-wiki/
 
 ## References & Inspiration
 
-### Core Concept: LLM as Wiki Maintainer
+### Origin: Andrej Karpathy's LLM Wiki
 
-The idea of using an LLM to build and maintain a persistent, structured wiki — rather than relying on RAG for every query — comes from Simon Willison's explorations of LLM-assisted knowledge management. The key insight: **organize once, update continuously, compound over time**. Instead of re-retrieving on every question, the LLM curates knowledge into interlinked pages that grow richer with each source.
+The original concept and architecture of LLM Wiki comes from [Andrej Karpathy's complete design document](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). The document establishes the three-layer architecture (raw sources → wiki pages → schema), the four core operations (init, ingest, query, lint), and the fundamental philosophy:
+
+> "The human's job is to curate sources, direct analysis, ask good questions. The LLM's job is everything else."
+
+Key ideas from Karpathy's design that this project implements:
+- **Immutable raw sources** — LLM reads but never modifies originals
+- **LLM-owned wiki** — the LLM generates, updates, and maintains all wiki pages
+- **Schema-driven** — a configuration document defines structure and conventions
+- **Compounding artifact** — the wiki grows richer with each source, unlike RAG which starts fresh every query
+- **Contradiction as feature** — conflicting claims across sources are explicitly marked, not silently resolved
+
+### Further Inspiration
 
 - [Simon Willison's Weblog](https://simonwillison.net/) — Extensive writing on practical LLM workflows and personal knowledge management
 

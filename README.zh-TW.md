@@ -77,21 +77,58 @@ my-knowledge-base/
 
 ## 安裝
 
-### 作為 Claude Code skill
+### 方式一：Clone 為 Claude Code skill（推薦）
 
 ```bash
-# 複製到 skills 目錄
-cp -r llm-wiki ~/.claude/skills/
-
-# 或直接 clone
 git clone git@github.com:shingo0620/my-llm-wiki.git ~/.claude/skills/llm-wiki
 ```
 
-### 依賴
+安裝完成後，在任何 Claude Code session 中使用 `/llm-wiki init` 即可建立第一個知識庫。
 
-- **Python 3** — 擷取腳本需要
-- **curl** — markdown.new API 需要
-- **youtube-transcript-api** — 首次匯入 YouTube 時自動安裝
+### 方式二：複製到現有 skills 目錄
+
+```bash
+cp -r llm-wiki ~/.claude/skills/
+```
+
+### 方式三：作為 Claude Code plugin 安裝
+
+如果你的 Claude Code 版本支援 plugin 安裝：
+
+```bash
+claude plugin add shingo0620/my-llm-wiki
+```
+
+### 驗證安裝
+
+在 Claude Code session 中輸入 `/llm-wiki`，如果 skill 載入成功就代表安裝完成。然後執行 `/llm-wiki init` 建立第一個知識庫。
+
+### 前置需求
+
+| 依賴 | 用途 | 備註 |
+|------|------|------|
+| **Python 3** | 擷取腳本 | macOS/Linux 通常已預裝 |
+| **curl** | URL 擷取（markdown.new） | 通常已預裝 |
+| **youtube-transcript-api** | YouTube 擷取 | 首次使用時自動安裝（透過 `pip` 或 `uv`） |
+
+### 快速開始
+
+```bash
+# 1. 安裝 skill
+git clone git@github.com:shingo0620/my-llm-wiki.git ~/.claude/skills/llm-wiki
+
+# 2. 開啟 Claude Code，初始化知識庫
+#    輸入：/llm-wiki init
+
+# 3. 放入來源檔案或提供 URL
+#    輸入：/llm-wiki ingest
+
+# 4. 查詢知識庫
+#    輸入：/llm-wiki query
+
+# 5. 定期健康檢查
+#    輸入：/llm-wiki lint
+```
 
 ## 腳本
 
@@ -122,9 +159,21 @@ llm-wiki/
 
 ## 參考來源與設計靈感
 
-### 核心概念：LLM 作為 Wiki 維護者
+### 原始構想：Andrej Karpathy 的 LLM Wiki
 
-用 LLM 建立並維護持久的結構化 wiki，而非每次查詢都靠 RAG 重新擷取——這個核心想法來自 Simon Willison 對 LLM 輔助知識管理的探索。關鍵洞察：**整理一次、持續更新、隨時間複利**。LLM 不是每次被問到才去找資料，而是主動將知識策展成彼此連結的頁面，每匯入一個來源就讓整個知識庫更豐富。
+本專案的原始概念與架構來自 [Andrej Karpathy 撰寫的 LLM Wiki 完整構想文件](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)。該文件確立了三層架構（原始來源 → wiki 頁面 → schema）、四個核心操作（init、ingest、query、lint），以及根本哲學：
+
+> "The human's job is to curate sources, direct analysis, ask good questions. The LLM's job is everything else."
+> （人類的工作是策展來源、引導分析、提出好問題。其他所有事情都是 LLM 的工作。）
+
+本專案實作了 Karpathy 文件中的關鍵設計：
+- **不可變的原始來源** — LLM 只讀不改原始資料
+- **LLM 擁有的 wiki** — LLM 生成、更新、維護所有 wiki 頁面
+- **Schema 驅動** — 設定文件定義結構與慣例
+- **複利型產物** — wiki 隨每個來源越來越豐富，不同於 RAG 每次從零開始
+- **矛盾作為功能** — 不同來源的衝突主張被明確標記，而非靜默解決
+
+### 延伸靈感
 
 - [Simon Willison's Weblog](https://simonwillison.net/) — 大量關於 LLM 實務工作流程與個人知識管理的文章
 
