@@ -23,9 +23,10 @@ POLL_INTERVAL=2
 
 # 1. 發起 crawl
 echo "正在擷取: ${URL}" >&2
+JSON_BODY=$(URL_INPUT="${URL}" python3 -c "import json,os; print(json.dumps({'url': os.environ['URL_INPUT'], 'limit': 1}))")
 RESPONSE=$(curl -sf -X POST "${API_BASE}/crawl" \
   -H 'Content-Type: application/json' \
-  -d "{\"url\": \"${URL}\", \"limit\": 1}")
+  -d "${JSON_BODY}")
 
 JOB_ID=$(echo "${RESPONSE}" | python3 -c "import json,sys; print(json.load(sys.stdin)['jobId'])")
 
@@ -108,6 +109,12 @@ print(markdown)
 # 檢查是否有 records
 if echo "${PARSED}" | head -1 | grep -q "ERROR:NO_RECORDS"; then
   echo "錯誤：crawl 完成但無內容" >&2
+  exit 1
+fi
+
+# 確認 Python 解析成功產出完整結果
+if ! echo "${PARSED}" | grep -q "^MARKDOWN_START$"; then
+  echo "錯誤：無法解析 API 回應" >&2
   exit 1
 fi
 

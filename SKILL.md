@@ -250,17 +250,21 @@ LLM 負責：摘要、交叉引用、歸檔、整理與維護。
 **a. 檔案** — 來源已在 `raw/` 中，直接進入步驟 2。
 
 **b. URL（網頁）** — 使用者提供一般網頁連結時：
-1. 執行 `scripts/fetch-url.sh` 擷取網頁內容並存入 `raw/`：
+1. 找到腳本路徑並擷取網頁內容存入 `raw/`：
    ```bash
-   ~/.claude/skills/llm-wiki/scripts/fetch-url.sh "<URL>" "./raw"
+   # 偵測 skill 安裝位置
+   SKILL_SCRIPTS=$(find ~/.claude/skills .claude/skills -path "*/llm-wiki/scripts/fetch-url.sh" 2>/dev/null | head -1 | xargs dirname 2>/dev/null)
+   "${SKILL_SCRIPTS}/fetch-url.sh" "<URL>" "./raw"
    ```
    腳本會自動：透過 markdown.new API 擷取、以網頁標題的 kebab-case 命名、在檔案開頭加上 `source-url`/`title`/`fetched` metadata
 2. 腳本成功時會印出檔案路徑，用該路徑繼續步驟 2
 
 **c. YouTube URL** — 使用者提供 YouTube 影片連結時：
-1. 執行 `scripts/fetch-youtube.sh` 取得逐字稿並存入 `raw/`：
+1. 找到腳本路徑並取得逐字稿存入 `raw/`：
    ```bash
-   ~/.claude/skills/llm-wiki/scripts/fetch-youtube.sh "<YouTube URL>" "./raw"
+   # 偵測 skill 安裝位置（若上方已偵測過則跳過）
+   SKILL_SCRIPTS=$(find ~/.claude/skills .claude/skills -path "*/llm-wiki/scripts/fetch-youtube.sh" 2>/dev/null | head -1 | xargs dirname 2>/dev/null)
+   "${SKILL_SCRIPTS}/fetch-youtube.sh" "<YouTube URL>" "./raw"
    ```
    腳本會自動：透過 `youtube-transcript-api` 取得逐字稿（首次執行自動安裝）、用影片標題命名（`yt-` 前綴）、加上時間戳與 metadata
 2. 腳本成功時會印出檔案路徑，用該路徑繼續步驟 2

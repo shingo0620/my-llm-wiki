@@ -24,9 +24,12 @@ OUTPUT_DIR="${2:?用法: fetch-youtube.sh <YOUTUBE_URL> <OUTPUT_DIR>}"
 if ! python3 -c "import youtube_transcript_api" 2>/dev/null; then
   echo "正在安裝 youtube-transcript-api..." >&2
   if command -v uv &>/dev/null; then
-    uv pip install --system youtube-transcript-api --quiet 2>&1 >&2
+    uv pip install youtube-transcript-api --quiet 2>&1 >&2
+  elif command -v pip3 &>/dev/null; then
+    pip3 install --user youtube-transcript-api --quiet 2>&1 >&2
   else
-    pip3 install youtube-transcript-api --quiet 2>&1 >&2
+    echo "錯誤：找不到 uv 或 pip3，無法安裝 youtube-transcript-api" >&2
+    exit 1
   fi
 fi
 
@@ -61,10 +64,13 @@ try:
     from youtube_transcript_api import YouTubeTranscriptApi
 
     ytt_api = YouTubeTranscriptApi()
-    transcript_list = ytt_api.fetch(video_id)
 
     # 嘗試取得繁體中文 > 簡體中文 > 英文 > 任何可用語言
-    transcript = transcript_list
+    preferred_langs = ['zh-TW', 'zh-Hant', 'zh', 'zh-Hans', 'en']
+    try:
+        transcript = ytt_api.fetch(video_id, languages=preferred_langs)
+    except Exception:
+        transcript = ytt_api.fetch(video_id)
 except Exception as e:
     print(f"ERROR:無法取得逐字稿: {e}")
     sys.exit(0)
