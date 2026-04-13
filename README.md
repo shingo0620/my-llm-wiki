@@ -1,5 +1,7 @@
 # LLM Wiki
 
+[繁體中文](README.zh-TW.md)
+
 A Claude Code skill for building and maintaining personal knowledge bases as structured, interlinked Markdown files.
 
 Unlike RAG (retrieve every query), LLM Wiki organizes knowledge once and keeps it updated — compounding over time.
