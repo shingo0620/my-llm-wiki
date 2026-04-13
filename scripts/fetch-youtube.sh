@@ -137,9 +137,18 @@ VIDEO_ID=$(echo "${PARSED}" | grep "^VIDEO_ID:" | head -1 | sed 's/^VIDEO_ID://'
 MARKDOWN=$(echo "${PARSED}" | sed -n '/^MARKDOWN_START$/,$ p' | tail -n +2)
 TODAY=$(date +%Y-%m-%d)
 
-# 寫入檔案
+# 寫入檔案（避免同名覆蓋）
 mkdir -p "${OUTPUT_DIR}"
 OUTPUT_FILE="${OUTPUT_DIR}/${FILENAME}"
+
+if [ -f "${OUTPUT_FILE}" ]; then
+  BASE="${FILENAME%.md}"
+  COUNTER=2
+  while [ -f "${OUTPUT_DIR}/${BASE}-${COUNTER}.md" ]; do
+    COUNTER=$((COUNTER + 1))
+  done
+  OUTPUT_FILE="${OUTPUT_DIR}/${BASE}-${COUNTER}.md"
+fi
 
 {
   echo "<!-- source-url: ${URL} -->"

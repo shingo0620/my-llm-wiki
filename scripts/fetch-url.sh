@@ -26,6 +26,7 @@ echo "正在擷取: ${URL}" >&2
 JSON_BODY=$(URL_INPUT="${URL}" python3 -c "import json,os; print(json.dumps({'url': os.environ['URL_INPUT'], 'limit': 1}))")
 RESPONSE=$(curl -sf -X POST "${API_BASE}/crawl" \
   -H 'Content-Type: application/json' \
+  -H 'User-Agent: llm-wiki/1.0' \
   -d "${JSON_BODY}")
 
 JOB_ID=$(echo "${RESPONSE}" | python3 -c "import json,sys; print(json.load(sys.stdin)['jobId'])")
@@ -39,7 +40,7 @@ echo "Job ID: ${JOB_ID}" >&2
 
 # 2. 輪詢等待完成
 for i in $(seq 1 ${MAX_RETRIES}); do
-  RESULT=$(curl -sf "${API_BASE}/crawl/status/${JOB_ID}?format=json")
+  RESULT=$(curl -sf -H 'User-Agent: llm-wiki/1.0' "${API_BASE}/crawl/status/${JOB_ID}?format=json")
   STATUS=$(echo "${RESULT}" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('result',{}).get('status','unknown'))")
 
   if [ "${STATUS}" = "completed" ]; then
@@ -124,9 +125,18 @@ ACTUAL_URL=$(echo "${PARSED}" | grep "^URL:" | head -1 | sed 's/^URL://')
 MARKDOWN=$(echo "${PARSED}" | sed -n '/^MARKDOWN_START$/,$ p' | tail -n +2)
 TODAY=$(date +%Y-%m-%d)
 
-# 4. 寫入檔案
+# 4. 寫入檔案（避免同名覆蓋）
 mkdir -p "${OUTPUT_DIR}"
 OUTPUT_FILE="${OUTPUT_DIR}/${FILENAME}"
+
+if [ -f "${OUTPUT_FILE}" ]; then
+  BASE="${FILENAME%.md}"
+  COUNTER=2
+  while [ -f "${OUTPUT_DIR}/${BASE}-${COUNTER}.md" ]; do
+    COUNTER=$((COUNTER + 1))
+  done
+  OUTPUT_FILE="${OUTPUT_DIR}/${BASE}-${COUNTER}.md"
+fi
 
 {
   echo "<!-- source-url: ${ACTUAL_URL:-${URL}} -->"

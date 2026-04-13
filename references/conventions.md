@@ -243,6 +243,9 @@ tags: [相關標籤]
 
 ## 綜整與分析
 - [[llm-scaling-debate]] — 關於 scaling 是否足夠的多方觀點整理（來源數：5）
+
+## 比較
+- [[gpt4-vs-claude3]] — GPT-4 與 Claude 3 的能力比較（來源數：3）
 ```
 
 每個條目一行，包含：
