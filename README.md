@@ -108,8 +108,13 @@ Both scripts output the saved file path on success. Files include metadata heade
 
 ```
 llm-wiki/
+├── .claude-plugin/
+│   ├── plugin.json          # Plugin metadata
+│   └── marketplace.json     # Marketplace registry
 ├── SKILL.md                 # Skill definition (main instruction set)
+├── EXAMPLES.md              # Practical operation examples
 ├── README.md                # This file
+├── README.zh-TW.md          # Chinese documentation
 ├── scripts/
 │   ├── fetch-url.sh         # URL → Markdown fetcher
 │   └── fetch-youtube.sh     # YouTube → transcript fetcher

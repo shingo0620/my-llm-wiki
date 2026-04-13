@@ -106,7 +106,11 @@ git clone git@github.com:shingo0620/my-llm-wiki.git ~/.claude/skills/llm-wiki
 
 ```
 llm-wiki/
+├── .claude-plugin/
+│   ├── plugin.json          # Plugin metadata
+│   └── marketplace.json     # Marketplace 註冊資訊
 ├── SKILL.md                 # Skill 定義檔（主要指令集）
+├── EXAMPLES.md              # 操作範例（init/ingest/query/lint 實際流程展示）
 ├── README.md                # 英文說明
 ├── README.zh-TW.md          # 繁體中文說明（本檔案）
 ├── scripts/

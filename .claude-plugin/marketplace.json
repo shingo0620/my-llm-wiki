@@ -1,0 +1,23 @@
+{
+  "registry": "claude-plugins",
+  "packages": [
+    {
+      "name": "llm-wiki",
+      "owner": "shingo0620",
+      "repo": "my-llm-wiki",
+      "category": "productivity",
+      "keywords": [
+        "wiki",
+        "knowledge-base",
+        "note-taking",
+        "obsidian",
+        "markdown"
+      ],
+      "plugins": [
+        {
+          "path": "./"
+        }
+      ]
+    }
+  ]
+}

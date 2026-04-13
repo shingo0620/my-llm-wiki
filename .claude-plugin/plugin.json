@@ -1,0 +1,20 @@
+{
+  "name": "llm-wiki",
+  "description": "Build and maintain personal knowledge bases as structured, interlinked Markdown wikis. Supports init, ingest (files, URLs, YouTube), query, and lint operations.",
+  "version": "1.0.0",
+  "author": {
+    "name": "shingo0620"
+  },
+  "license": "MIT",
+  "keywords": [
+    "wiki",
+    "knowledge-base",
+    "note-taking",
+    "obsidian",
+    "markdown",
+    "rag-alternative"
+  ],
+  "skills": [
+    "./skills/llm-wiki"
+  ]
+}
