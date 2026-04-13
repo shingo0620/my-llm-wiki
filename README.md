@@ -122,6 +122,36 @@ llm-wiki/
     └── conventions.md       # Page format standards & templates
 ```
 
+## References & Inspiration
+
+### Core Concept: LLM as Wiki Maintainer
+
+The idea of using an LLM to build and maintain a persistent, structured wiki — rather than relying on RAG for every query — comes from Simon Willison's explorations of LLM-assisted knowledge management. The key insight: **organize once, update continuously, compound over time**. Instead of re-retrieving on every question, the LLM curates knowledge into interlinked pages that grow richer with each source.
+
+- [Simon Willison's Weblog](https://simonwillison.net/) — Extensive writing on practical LLM workflows and personal knowledge management
+
+### Wiki Structure & Obsidian Compatibility
+
+The page format (YAML frontmatter, `[[wikilinks]]`, kebab-case filenames) is designed for compatibility with [Obsidian](https://obsidian.md), enabling graph visualization and bidirectional linking. The five page types (source, entity, concept, synthesis, comparison) draw from established knowledge management taxonomies, particularly the [Zettelkasten method](https://zettelkasten.de/introduction/) adapted for LLM-driven curation.
+
+### Profile-Driven Behavior
+
+The concept of a structured profile in `CLAUDE.md` that guides all subsequent operations is inspired by the pattern seen in Claude Code's own `CLAUDE.md` convention — project-level instructions that shape agent behavior. We extended this into a two-layer design (high-level principles + specific guidelines) informed by the distinction between *constitutive rules* (what the system is) and *regulative rules* (how it behaves) from John Searle's work on institutional reality.
+
+### Source Ingestion Pipeline
+
+- **URL fetching** via [markdown.new](https://markdown.new) — a free API by Firecrawl that converts web pages to clean Markdown, avoiding the noise of raw HTML scraping
+- **YouTube transcripts** via [youtube-transcript-api](https://github.com/jdepoix/youtube-transcript-api) — lightweight Python library for fetching auto-generated and manual captions without requiring YouTube Data API credentials
+- The "fetch → save to `raw/` → ingest" pipeline follows the principle of **immutable source data**: raw inputs are never modified, only read. This mirrors the event sourcing pattern in software architecture.
+
+### Contradiction as Feature
+
+The design decision to explicitly mark contradictions between sources (rather than silently resolving them) is influenced by [Hegelian dialectics](https://plato.stanford.edu/entries/hegel-dialectics/) and the ACH (Analysis of Competing Hypotheses) methodology used in intelligence analysis. Contradictions are valuable information — they reveal where knowledge is contested, evolving, or context-dependent.
+
+### Plugin Structure
+
+The `.claude-plugin/` packaging follows the [Claude Code plugin specification](https://docs.anthropic.com/en/docs/claude-code/plugins), modeled after patterns seen in projects like [andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills).
+
 ## License
 
 MIT

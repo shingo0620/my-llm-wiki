@@ -120,6 +120,36 @@ llm-wiki/
     └── conventions.md       # 頁面格式規範與模板
 ```
 
+## 參考來源與設計靈感
+
+### 核心概念：LLM 作為 Wiki 維護者
+
+用 LLM 建立並維護持久的結構化 wiki，而非每次查詢都靠 RAG 重新擷取——這個核心想法來自 Simon Willison 對 LLM 輔助知識管理的探索。關鍵洞察：**整理一次、持續更新、隨時間複利**。LLM 不是每次被問到才去找資料，而是主動將知識策展成彼此連結的頁面，每匯入一個來源就讓整個知識庫更豐富。
+
+- [Simon Willison's Weblog](https://simonwillison.net/) — 大量關於 LLM 實務工作流程與個人知識管理的文章
+
+### Wiki 結構與 Obsidian 相容性
+
+頁面格式（YAML frontmatter、`[[wikilinks]]`、kebab-case 檔名）設計為與 [Obsidian](https://obsidian.md) 相容，可直接使用知識圖譜視覺化與雙向連結。五種頁面類型（source、entity、concept、synthesis、comparison）借鑑了成熟的知識管理分類法，特別是 [Zettelkasten 方法](https://zettelkasten.de/introduction/)——但適配為 LLM 驅動的策展模式，而非人工逐筆建卡。
+
+### Profile 驅動行為
+
+在 `CLAUDE.md` 中以結構化 profile 指導所有後續操作，這個概念受 Claude Code 自身 `CLAUDE.md` 慣例的啟發——專案層級指令塑造 agent 行為。我們將其擴展為雙層設計（高層原則 + 具體指引），參考了 John Searle 制度性現實理論中 *構成性規則*（系統是什麼）與 *調節性規則*（系統怎麼運作）的區分。
+
+### 來源擷取管線
+
+- **URL 擷取**透過 [markdown.new](https://markdown.new) — Firecrawl 提供的免費 API，將網頁轉換為乾淨的 Markdown，避免原始 HTML 的雜訊
+- **YouTube 逐字稿**透過 [youtube-transcript-api](https://github.com/jdepoix/youtube-transcript-api) — 輕量 Python 套件，直接取得自動生成或手動上傳的字幕，不需 YouTube Data API 金鑰
+- 「擷取 → 存入 `raw/` → 匯入」的管線遵循**不可變來源資料**原則：原始輸入永不修改，只讀取。這借鏡了軟體架構中的 Event Sourcing 模式
+
+### 矛盾作為功能
+
+明確標記來源之間的矛盾（而非靜默解決）的設計決策，受到[黑格爾辯證法](https://plato.stanford.edu/entries/hegel-dialectics/)和情報分析中 ACH（競爭假設分析）方法論的影響。矛盾本身就是有價值的資訊——它揭示了知識在哪些地方是有爭議的、正在演變的、或依賴脈絡的。
+
+### Plugin 結構
+
+`.claude-plugin/` 封裝遵循 [Claude Code plugin 規範](https://docs.anthropic.com/en/docs/claude-code/plugins)，參考了 [andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills) 等專案的模式。
+
 ## 授權
 
 MIT
