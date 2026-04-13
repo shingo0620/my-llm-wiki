@@ -77,23 +77,23 @@ my-knowledge-base/
 
 ## 安裝
 
-### 方式一：Clone 為 Claude Code skill（推薦）
+### 方式一：npx skills add（推薦）
+
+```bash
+# 全域安裝
+npx skills add shingo0620/my-llm-wiki -g -y
+
+# 或只安裝到當前專案
+npx skills add shingo0620/my-llm-wiki -y
+```
+
+### 方式二：Git clone
 
 ```bash
 git clone git@github.com:shingo0620/my-llm-wiki.git ~/.claude/skills/llm-wiki
 ```
 
-安裝完成後，在任何 Claude Code session 中使用 `/llm-wiki init` 即可建立第一個知識庫。
-
-### 方式二：複製到現有 skills 目錄
-
-```bash
-cp -r llm-wiki ~/.claude/skills/
-```
-
-### 方式三：作為 Claude Code plugin 安裝
-
-如果你的 Claude Code 版本支援 plugin 安裝：
+### 方式三：Claude Code plugin
 
 ```bash
 claude plugin add shingo0620/my-llm-wiki
@@ -115,7 +115,7 @@ claude plugin add shingo0620/my-llm-wiki
 
 ```bash
 # 1. 安裝 skill
-git clone git@github.com:shingo0620/my-llm-wiki.git ~/.claude/skills/llm-wiki
+npx skills add shingo0620/my-llm-wiki -g -y
 
 # 2. 開啟 Claude Code，初始化知識庫
 #    輸入：/llm-wiki init

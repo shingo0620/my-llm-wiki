@@ -79,23 +79,23 @@ Pages use `[[wikilinks]]` for cross-referencing. Recommended viewer: [Obsidian](
 
 ## Installation
 
-### Option 1: Clone as a Claude Code skill (recommended)
+### Option 1: npx skills add (recommended)
+
+```bash
+# Install globally
+npx skills add shingo0620/my-llm-wiki -g -y
+
+# Or install to current project only
+npx skills add shingo0620/my-llm-wiki -y
+```
+
+### Option 2: Git clone
 
 ```bash
 git clone git@github.com:shingo0620/my-llm-wiki.git ~/.claude/skills/llm-wiki
 ```
 
-After cloning, the skill is immediately available. Use `/llm-wiki init` in any Claude Code session to create your first knowledge base.
-
-### Option 2: Copy into an existing skills directory
-
-```bash
-cp -r llm-wiki ~/.claude/skills/
-```
-
-### Option 3: Install as a Claude Code plugin
-
-If your Claude Code version supports plugin installation:
+### Option 3: Claude Code plugin
 
 ```bash
 claude plugin add shingo0620/my-llm-wiki
@@ -117,7 +117,7 @@ In a Claude Code session, type `/llm-wiki` — if the skill loads, you're ready.
 
 ```bash
 # 1. Install the skill
-git clone git@github.com:shingo0620/my-llm-wiki.git ~/.claude/skills/llm-wiki
+npx skills add shingo0620/my-llm-wiki -g -y
 
 # 2. Open Claude Code and initialize a knowledge base
 #    In Claude Code, type:
