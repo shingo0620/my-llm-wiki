@@ -18,6 +18,8 @@
 | `/llm-wiki query` | 查詢知識庫 |
 | `/llm-wiki lint` | 健康檢查與維護 |
 
+每個指令都可能觸發**內化機制關卡**（見 Key Features）——這是個硬性關卡，要求你表態才能讓操作完成。
+
 ## 支援的來源類型
 
 LLM Wiki 可匯入三種來源：
@@ -36,8 +38,9 @@ my-knowledge-base/
 │   └── assets/           # 圖片與附件
 ├── wiki/                 # LLM 生成與維護的 Markdown 頁面
 │   ├── index.md          # 自動維護的內容索引
-│   └── log.md            # 僅追加的操作日誌
-└── CLAUDE.md             # 知識庫 Profile 與 schema 設定
+│   ├── log.md            # 僅追加的操作日誌（含 reflect 事件）
+│   └── .pending/         # 暫停中的內化草稿（自動管理）
+└── CLAUDE.md             # 知識庫 Profile 與 schema 設定（含內化機制設定）
 ```
 
 ## 主要功能
@@ -74,6 +77,19 @@ my-knowledge-base/
 | **比較頁**（comparison） | 並排比較 |
 
 頁面使用 `[[wikilinks]]` 進行交叉引用。推薦使用 [Obsidian](https://obsidian.md) 瀏覽。
+
+### 內化機制——強迫思考迴圈
+
+當 `CLAUDE.md` 啟用內化機制（預設開啟），`ingest` 與 `query` 會插入**硬性思考關卡**，逼你對來源核心主張表態：
+
+1. **Anchor**——對 2-3 個核心主張出選擇題（完整描述主張，不用代名詞）
+2. **Defend**——50-150 字開放題說明立場
+3. **Challenge**——LLM 扮紅隊提出有實質內容的反方論點，你回應
+4. **Compose**——上述整理成 `## 我的觀點` 區塊附在 wiki 頁底部（dated 累加）
+
+關卡未通過則操作不算完成。raw/ 中沒有觀點的來源會被 `lint` 標出。未來的 ingest 與 query 主動引用既有觀點，讓 wiki 從「外部資料整理」演化為「外部資料 + 我的判斷軌跡」的複利資產。
+
+`init` 新增兩題可調整（內化深度：全開 / 中等 / 關閉；觀點演化檢查：開 / 關）。隨時可暫停——草稿存在 `wiki/.pending/` 下次自動恢復。
 
 ## 安裝
 

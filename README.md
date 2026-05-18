@@ -20,6 +20,8 @@ Unlike RAG (retrieve every query), LLM Wiki organizes knowledge once and keeps i
 | `/llm-wiki query` | Query the knowledge base |
 | `/llm-wiki lint` | Health check and maintenance |
 
+Each command may trigger an **internalization checkpoint** (see Key Features) — a hard gate that requires you to take a stance before the operation completes.
+
 ## Source Types
 
 LLM Wiki can ingest from three source types:
@@ -38,8 +40,9 @@ my-knowledge-base/
 │   └── assets/           # Images and attachments
 ├── wiki/                 # LLM-generated Markdown pages
 │   ├── index.md          # Auto-maintained content index
-│   └── log.md            # Append-only operation log
-└── CLAUDE.md             # Knowledge base profile & schema
+│   ├── log.md            # Append-only operation log (incl. reflect events)
+│   └── .pending/         # Paused internalization drafts (auto-managed)
+└── CLAUDE.md             # Knowledge base profile & schema (incl. internalization settings)
 ```
 
 ## Key Features
@@ -76,6 +79,19 @@ Every operation reads `CLAUDE.md` first:
 | **Comparison** | Side-by-side comparisons |
 
 Pages use `[[wikilinks]]` for cross-referencing. Recommended viewer: [Obsidian](https://obsidian.md).
+
+### Internalization — Forced Thinking Loop
+
+When enabled in `CLAUDE.md` (default ON), `ingest` and `query` insert a **hard checkpoint** that forces you to take a stance on the source's core claims:
+
+1. **Anchor** — 2-3 multiple-choice questions on the source's core claims (full claim inlined, no pronoun shortcuts)
+2. **Defend** — 50-150 word open answer on your stance
+3. **Challenge** — LLM plays red team with a substantial counter-argument, you respond
+4. **Compose** — answers are merged into a `## My Stance` block appended to the wiki page (dated, accumulates over time)
+
+Operation does not complete until the checkpoint clears. Sources sitting in `raw/` without a stance are flagged by `lint`. Past stances are surfaced by future `ingest` and `query` calls, so the wiki becomes "external facts + your judgment trail" — a compounding artifact, not just a tidy folder.
+
+Configurable via two questions in `init` (depth: full / mid / off; conflict detection: on / off). Pause anytime — drafts stored in `wiki/.pending/` and resumed on next op.
 
 ## Installation
 
