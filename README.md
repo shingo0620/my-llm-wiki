@@ -47,14 +47,15 @@ my-knowledge-base/
 
 ## Key Features
 
-### Structured Init (12-question profile)
+### Structured Init (14-question profile)
 
-`init` walks you through 12 questions (with example answers) across 4 categories:
+`init` walks you through 14 questions (with example answers) across 5 categories:
 
 - **Basic info** — topic, directory, language
 - **Purpose & audience** — goals, who will use it
 - **Organization preferences** — structure, summary style, quoting policy
 - **Quality standards** — contradiction handling, confidence markers, custom fields
+- **Internalization depth** — thinking checkpoint intensity and conflict detection (questions 13-14)
 
 Answers are stored in `CLAUDE.md` as a two-layer profile (high-level principles + specific guidelines) that guides all subsequent operations.
 
