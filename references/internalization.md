@@ -164,7 +164,7 @@ D. 中立——<為什麼可能還無法表態>
 
 ### 標籤命名空間
 
-（本檔為標籤定義的權威來源。`references/conventions.md` 完成後會同步重列。）
+（本檔與 `references/conventions.md` 同步維護標籤定義。任何修改應同步兩處。）
 
 - `#stance:agree` — 對應 A
 - `#stance:partial-agree` — 對應 B
