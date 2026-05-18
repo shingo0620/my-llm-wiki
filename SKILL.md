@@ -221,11 +221,11 @@ LLM 負責：摘要、交叉引用、歸檔、整理與維護。
 根據使用者的回答調整 profile 內容。不要照搬範本——理解使用者的需求後產出符合其目的與領域的指引。「知識庫調性」由 LLM 綜合所有回答後自行歸納一句話。
 
 **內化機制參數對應第 13、14 題**：
-- 第 13 題「最強」→ 啟用 true、ingest_challenge true、anchor_count 3
-- 第 13 題「中等」→ 啟用 true、ingest_challenge false、anchor_count 2
-- 第 13 題「最輕」→ 啟用 false（其他欄位用預設值寫入，方便日後切回 true）
-- 第 14 題「想」→ lint_stance_conflict true
-- 第 14 題「不用」→ lint_stance_conflict false
+- 第 13 題「最強」→ `internalization_enabled: true`、`ingest_challenge_enabled: true`、`ingest_anchor_count: 3`
+- 第 13 題「中等」→ `internalization_enabled: true`、`ingest_challenge_enabled: false`、`ingest_anchor_count: 2`
+- 第 13 題「最輕」→ `internalization_enabled: false`（其他欄位用預設值寫入，方便日後切回 true）
+- 第 14 題「想」→ `lint_stance_conflict_enabled: true`
+- 第 14 題「不用」→ `lint_stance_conflict_enabled: false`
 
 ### 6. 告知後續步驟
 
