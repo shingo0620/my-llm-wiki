@@ -43,6 +43,10 @@ tags: [相關標籤]
 - 支持 [[概念A]] 的論點
 - 與 [[來源B]] 的主張矛盾（見 [[來源B#某段]]）
 - 新增了關於 [[實體C]] 的資訊
+
+## 我的觀點
+
+（由內化機制三段式產出，dated subheading 累加。詳見 [`references/internalization.md`](internalization.md) 與本檔「`## 我的觀點` 區塊格式」段落）
 ```
 
 ### 實體頁（entity）
@@ -157,6 +161,10 @@ tags: [相關標籤]
 ## 結論
 
 （綜合判斷）
+
+## 我的觀點
+
+（由內化機制三段式產出，dated subheading 累加。詳見 [`references/internalization.md`](internalization.md) 與本檔「`## 我的觀點` 區塊格式」段落）
 ```
 
 ### 比較頁（comparison）
@@ -193,6 +201,10 @@ tags: [相關標籤]
 ## 結論與建議
 
 （依情境不同的選擇建議）
+
+## 我的觀點
+
+（由內化機制三段式產出，dated subheading 累加。詳見 [`references/internalization.md`](internalization.md) 與本檔「`## 我的觀點` 區塊格式」段落）
 ```
 
 ## 檔名慣例
@@ -275,6 +287,103 @@ tags: [相關標籤]
 ```bash
 grep "^## \[" wiki/log.md | tail -5
 ```
+
+### reflect op 格式
+
+每次完成思考環節（不論 ingest 或 query 觸發）都在 log.md 追加：
+
+```markdown
+## [YYYY-MM-DD] reflect | <來源或綜整頁標題>
+- <來源頁 / 綜整頁>：[[頁面名稱]]
+- 主張數：N（X 同意、Y 部分同意、Z 反對 / 存疑）
+- 紅隊回合：M（一行描述紅隊論點要旨與使用者回應方向）
+- 觸發於：<ingest / query>
+```
+
+範例：
+
+```markdown
+## [2026-05-18] reflect | Attention Is All You Need
+- 來源頁：[[attention-is-all-you-need]]
+- 主張數：3（2 同意、1 部分同意、0 反對）
+- 紅隊回合：1（接受批評，校準了 BLEU 飽和區的理解）
+- 觸發於：ingest
+
+## [2026-05-18] reflect | Transformer vs RNN（query 產出）
+- 綜整頁：[[transformer-vs-rnn]]
+- 主張數：2（皆完全同意）
+- 紅隊回合：0（query 簡化版）
+- 觸發於：query
+```
+
+用一致前綴方便篩選：
+
+```bash
+grep "^## \[.*\] reflect" wiki/log.md
+```
+
+## `## 我的觀點` 區塊格式
+
+來源頁、綜整頁、比較頁底部累加思考軌跡。**新觀點以 dated subheading 加在後面，不覆蓋舊觀點。**
+
+### 完整範例（ingest 產出）
+
+````markdown
+## 我的觀點
+
+### 2026-05-18
+
+**對核心主張的立場：**
+- 主張 1（Transformer 革命性勝過 SOTA）：部分同意（B）— BLEU 提升不算驚人
+- 主張 2（self-attention 取代 RNN 普遍有效）：存疑（C）— translation 成功不代表通用
+- 主張 3（訓練時間縮短）：完全同意（A）
+
+**我的論述：**
+接受架構創新本身的價值，但對「BLEU +2.1 是飛躍」的詮釋持保留。
+傾向把 SOTA 邊際提升放回計算成本的框架看……
+
+**對紅隊質疑的回應：**
+反方指出 BLEU 飽和區的邊際難度被低估。這個批評讓立場重新校準——……
+
+**未解問題：**
+- self-attention 在 vision、time-series 等其他模態是否同樣成立？
+- 訓練成本下降是否會被推論成本上升抵銷？
+
+**標籤：** #stance:partial-agree #strength:moderate
+````
+
+### 標籤命名空間
+
+| 標籤 | 對應 Anchor 選項 |
+|------|-----------------|
+| `#stance:agree` | A — 完全同意 |
+| `#stance:partial-agree` | B — 部分同意 |
+| `#stance:skeptical` | C — 不同意 / 存疑 |
+| `#stance:neutral` | D — 中立 / 待定 |
+
+| 信心標籤 | 意義 |
+|---------|------|
+| `#strength:strong` | 經 Defend + Challenge 仍維持立場 |
+| `#strength:moderate` | Defend 有合理論述但 Challenge 部分動搖 |
+| `#strength:weak` | Challenge 後立場明顯偏移 |
+
+（完整定義與使用時機見 [`references/internalization.md`](internalization.md)「標籤命名空間」段。）
+
+### 演化說明子段（由 lint 觸發）
+
+新舊觀點衝突被 lint 偵測且使用者選擇留下推進軌跡時，加在較新的 dated subheading 之下：
+
+````markdown
+### 2026-05-18
+
+（觀點內容如前述）
+
+#### 演化說明
+
+從 2026-01-15「完全同意（A）」演化到本次「部分同意（B）」的推動因素：
+- 看了 [[scaling-laws]] 後修正了對 SOTA 邊際提升的計算成本框架
+- 紅隊論點關於 BLEU 飽和區的部分實際說服了立場
+````
 
 ## 品質標準
 
