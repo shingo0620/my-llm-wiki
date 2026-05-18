@@ -57,12 +57,17 @@ D. 中立——<為什麼可能還無法表態>
 
 ### 觸發規則
 - 對 Anchor 中選 B、C、D 的主張：要求 50-150 字（ingest）或 50 字內（query）解釋理由
-- 對全選 A 的情境：LLM 從中挑「最具爭議性的一個主張」追問「最讓你同意的具體理由是什麼？」——避免無腦同意
+- 對全選 A 的情境：LLM 從中挑「最具爭議的一個主張」追問「最讓你同意的具體理由是什麼？」——避免無腦同意。爭議性判斷啟發式（依序）：
+  1. wiki 中存在對立觀點或矛盾紀錄的主張
+  2. 來源中作者本人有讓步、附帶條件、或承認反對意見的主張
+  3. 若皆無，挑論述最強（佐證最豐富）的主張，因為它最承擔結論
 
 ### 提問模板
 
+提問時必須 inline 重述使用者表態的主張內容，不可用「主張 X」「該主張」等代名詞——這呼應共通原則第 1 條。
+
 ```
-你對主張 X 選了 <B/C/D>。請說明：<具體要釐清的判準>？
+你對「<inline 完整重述該主張內容，30-80 字，含關鍵數據或條件>」選了 <B/C/D>。請說明：<具體要釐清的判準>？
 你會拿什麼樣的<證據/數字/案例>當基準？
 ```
 
@@ -93,7 +98,7 @@ D. 中立——<為什麼可能還無法表態>
 ### 提問模板
 
 ```
-你說<重述使用者 Defend 的核心論點>。但反方會這樣說：
+你說「<inline 完整重述使用者 Defend 論點的核心，20-50 字，不依賴前文上下文>」。但反方會這樣說：
 
 「<完整紅隊論點，含推論鏈、具體證據或案例，100-300 字>」
 
@@ -153,14 +158,19 @@ D. 中立——<為什麼可能還無法表態>
 <整合使用者 Defend 回答，50 字內>
 
 **標籤：** #stance:<整體立場>
+
+（query 簡化版不輸出 `#strength:`，因無 Challenge 階段。）
 ````
 
-### 標籤命名空間（與 references/conventions.md 一致）
+### 標籤命名空間
+
+（本檔為標籤定義的權威來源。`references/conventions.md` 完成後會同步重列。）
 
 - `#stance:agree` — 對應 A
 - `#stance:partial-agree` — 對應 B
 - `#stance:skeptical` — 對應 C
 - `#stance:neutral` — 對應 D
+- （`#strength:*` 標籤僅適用於 ingest 完整版三段式。query 簡化版無 Challenge 階段，不輸出 `#strength:`。）
 - `#strength:strong` — 經 Defend + Challenge 仍維持立場
 - `#strength:moderate` — Defend 有合理論述但 Challenge 部分動搖
 - `#strength:weak` — Challenge 後立場明顯偏移
@@ -179,12 +189,14 @@ D. 中立——<為什麼可能還無法表態>
 
 ### 檔案格式
 
+（以下範例假設使用者於 2026-05-18 14:30 暫停 ingest 操作；LLM 實際使用時應填入當下日期時間。）
+
 ```markdown
 ---
 target_page: wiki/attention-is-all-you-need.md
 trigger_op: ingest
 paused_at_stage: defend  # anchor / defend / challenge / compose
-paused_date: 2026-05-18
+paused_date: 2026-05-18  # 範例值，實際填入當下日期
 ---
 
 ## Anchor 進度
@@ -197,7 +209,7 @@ paused_date: 2026-05-18
 （尚未進入）
 
 ## 暫存原因
-使用者於 2026-05-18 14:30 說「先暫停，等等回來」
+使用者於 2026-05-18 14:30 說「先暫停，等等回來」  # 範例值，實際填入當下日期時間與說法
 ```
 
 ### 恢復流程
