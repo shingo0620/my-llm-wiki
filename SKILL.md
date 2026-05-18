@@ -1,6 +1,6 @@
 ---
 name: llm-wiki
-description: 使用 LLM 建立與維護個人知識庫 wiki。支援四種操作——init（初始化）、ingest（匯入來源）、query（查詢）、lint（健康檢查）。當使用者想建立知識庫、匯入文件或文章、查詢已整理的知識、檢查 wiki 品質時使用。即使使用者沒有明確說「wiki」，只要涉及知識整理、來源管理、結構化筆記、交叉引用維護、個人知識庫等概念，都應啟用此 skill。觸發情境包含：「幫我整理這些資料」、「把這篇文章加進知識庫」、「查一下之前整理的筆記」、「知識庫有什麼需要更新的」。
+description: 使用 LLM 建立與維護個人知識庫 wiki。支援四種操作——init（初始化）、ingest（匯入來源）、query（查詢）、lint（健康檢查）。當使用者想建立知識庫、匯入文件或文章、查詢已整理的知識、檢查 wiki 品質時使用。即使使用者沒有明確說「wiki」，只要涉及知識整理、來源管理、結構化筆記、交叉引用維護、個人知識庫等概念，都應啟用此 skill。觸發情境包含：「幫我整理這些資料」、「把這篇文章加進知識庫」、「查一下之前整理的筆記」、「知識庫有什麼需要更新的」、「強迫我思考這篇來源」、「我對 X 的立場是什麼」。
 ---
 
 # LLM Wiki — 知識庫管理
@@ -36,6 +36,17 @@ LLM 負責：摘要、交叉引用、歸檔、整理與維護。
 │   └── log.md            # 操作日誌（僅追加）
 └── CLAUDE.md             # Wiki schema 設定（定義結構與慣例）
 ```
+
+## 內化機制
+
+ingest 與 query 不只整理資料——當 CLAUDE.md profile 啟用內化機制時，會在流程中插入**硬性思考關卡**，逼使用者對來源主張或結論表態、辯護、面對紅隊挑戰，並將結果以 `## 我的觀點` 區塊累加在 wiki 頁面底部。後續操作主動引用既有觀點，讓「我的判斷」與來源主張並列為 wiki 第一公民。
+
+預設啟用。若想關閉，跑 `/llm-wiki init` 進更新模式調整。
+
+設計與細節見：
+- 觸發點與三段式骨架：本檔的 `Ingest` 與 `Query` 段
+- 執行細節（題目生成、紅隊原則、Compose 模板、`.pending/` 格式）：[`references/internalization.md`](references/internalization.md)
+- 頁面格式與 reflect log：[`references/conventions.md`](references/conventions.md)
 
 ---
 
