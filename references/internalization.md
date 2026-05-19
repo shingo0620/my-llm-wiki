@@ -249,6 +249,10 @@ target_page: wiki/attention-is-all-you-need.md
 trigger_op: ingest
 paused_at_stage: defend  # anchor / defend / challenge / compose
 paused_date: 2026-05-18  # 範例值，實際填入當下日期
+staged_pages:  # 步驟 4-8 已落盤的所有頁面，恢復時可選擇處理
+  - wiki/attention-is-all-you-need.md
+  - wiki/transformer-architecture.md
+  - wiki/google-brain.md
 ---
 
 ## Anchor 進度
@@ -269,6 +273,14 @@ paused_date: 2026-05-18  # 範例值，實際填入當下日期
 2. 若不為空，列出未完成的草稿（檔名、target_page、paused_at_stage、paused_date）
 3. 要求使用者選擇：(a) 恢復某份草稿（從 paused_at_stage 開始繼續）（b) 捨棄某份草稿（c) 都先放著，開始新操作（**但 lint 會持續提示**）
 4. 恢復後完成思考環節，正常流程寫入 target_page 並刪除 `.pending/` 中對應檔
+
+### 已落盤頁面（staged_pages）
+
+暫存草稿中的 `staged_pages` 列出步驟 4-8 已建立或更新的所有 wiki 頁面。恢復流程的選項：
+
+- **(a) 恢復草稿**：staged_pages 保留在 wiki/，從 paused_at_stage 繼續思考環節，完成後刪除 `.pending/` 中對應檔
+- **(b) 捨棄草稿**：詢問使用者是否同時回滾 staged_pages（git restore 或人工確認）。若選擇保留 staged_pages 但捨棄思考，lint 第 9 項會持續標示為「未思考的來源」
+- **(c) 暫不處理**：staged_pages 仍在 wiki/，lint 第 9 項會持續提示
 
 ### 過期偵測
 lint 偵測 `paused_date` 超過 profile 設定天數（預設 14）的草稿，提示使用者恢復或捨棄。
