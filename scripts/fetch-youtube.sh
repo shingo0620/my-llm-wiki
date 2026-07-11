@@ -21,16 +21,38 @@ set -euo pipefail
 URL="${1:?用法: fetch-youtube.sh <YOUTUBE_URL> <OUTPUT_DIR>}"
 OUTPUT_DIR="${2:?用法: fetch-youtube.sh <YOUTUBE_URL> <OUTPUT_DIR>}"
 
-# 確認 youtube-transcript-api 已安裝
+# 確保 python3 能 import youtube_transcript_api。
+# 現代 Python 打包生態有兩個常見坑，會讓「直接裝到當前 python3」失敗：
+#   1) uv pip install 不在啟用的 venv 內會直接拒絕（No virtual environment found）
+#   2) pip3 install --user 在 PEP 668 管控的 python（Homebrew、近年 Debian/Ubuntu）被擋
+# 另外 Homebrew python 大版本升級（如 3.13→3.14）會讓舊版裝好的套件從 site-packages 消失。
+# 因此當前 python3 缺此套件時，改用（必要時自動建立）專用 venv，一次避開上述問題。
+LLM_WIKI_VENV="${HOME}/.venvs/llm-wiki"
 if ! python3 -c "import youtube_transcript_api" 2>/dev/null; then
-  echo "正在安裝 youtube-transcript-api..." >&2
-  if command -v uv &>/dev/null; then
-    uv pip install youtube-transcript-api --quiet 2>&1 >&2
-  elif command -v pip3 &>/dev/null; then
-    pip3 install --user youtube-transcript-api --quiet 2>&1 >&2
+  if [[ -x "${LLM_WIKI_VENV}/bin/python3" ]] \
+     && "${LLM_WIKI_VENV}/bin/python3" -c "import youtube_transcript_api" 2>/dev/null; then
+    # 專用 venv 已備妥，切過去即可
+    PATH="${LLM_WIKI_VENV}/bin:${PATH}"
   else
-    echo "錯誤：找不到 uv 或 pip3，無法安裝 youtube-transcript-api" >&2
-    exit 1
+    echo "當前 python3 缺少 youtube-transcript-api，改用專用 venv 安裝..." >&2
+    if [[ ! -x "${LLM_WIKI_VENV}/bin/python3" ]]; then
+      if command -v uv &>/dev/null; then
+        uv venv "${LLM_WIKI_VENV}" >&2 || { echo "錯誤：uv venv 建立失敗" >&2; exit 1; }
+      elif python3 -c "import venv" 2>/dev/null; then
+        python3 -m venv "${LLM_WIKI_VENV}" >&2 || { echo "錯誤：python3 -m venv 建立失敗" >&2; exit 1; }
+      else
+        echo "錯誤：找不到 uv，且 python3 無 venv 模組（Debian 需先 apt install python3-venv）" >&2
+        exit 1
+      fi
+    fi
+    PATH="${LLM_WIKI_VENV}/bin:${PATH}"
+    if command -v uv &>/dev/null; then
+      uv pip install --python "${LLM_WIKI_VENV}/bin/python3" youtube-transcript-api --quiet >&2 \
+        || { echo "錯誤：youtube-transcript-api 安裝失敗（uv）" >&2; exit 1; }
+    else
+      "${LLM_WIKI_VENV}/bin/python3" -m pip install youtube-transcript-api --quiet >&2 \
+        || { echo "錯誤：youtube-transcript-api 安裝失敗（pip）" >&2; exit 1; }
+    fi
   fi
 fi
 
