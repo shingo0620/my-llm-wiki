@@ -33,7 +33,20 @@ if ! python3 -c "import youtube_transcript_api" 2>/dev/null; then
      && "${LLM_WIKI_VENV}/bin/python3" -c "import youtube_transcript_api" 2>/dev/null; then
     # 專用 venv 已備妥，切過去即可
     PATH="${LLM_WIKI_VENV}/bin:${PATH}"
+    export VIRTUAL_ENV="${LLM_WIKI_VENV}"
   else
+    # 用 mkdir 做原子鎖：避免多個並發呼叫同時建立/安裝同一個 venv 而互相打架
+    # （uv venv 與 python3 -m venv 都不是 race-safe，敗者會直接 exit 1）
+    LLM_WIKI_VENV_LOCK="${LLM_WIKI_VENV}.lock"
+    mkdir -p "$(dirname "${LLM_WIKI_VENV}")" 2>/dev/null
+    _lock_tries=0
+    until mkdir "${LLM_WIKI_VENV_LOCK}" 2>/dev/null; do
+      _lock_tries=$((_lock_tries + 1))
+      [[ ${_lock_tries} -gt 150 ]] && { echo "錯誤：等待 venv lock 逾時" >&2; exit 1; }
+      sleep 0.2
+    done
+    trap 'rmdir "${LLM_WIKI_VENV_LOCK}" 2>/dev/null' EXIT
+
     echo "當前 python3 缺少 youtube-transcript-api，改用專用 venv 安裝..." >&2
     if [[ ! -x "${LLM_WIKI_VENV}/bin/python3" ]]; then
       if command -v uv &>/dev/null; then
@@ -46,6 +59,7 @@ if ! python3 -c "import youtube_transcript_api" 2>/dev/null; then
       fi
     fi
     PATH="${LLM_WIKI_VENV}/bin:${PATH}"
+    export VIRTUAL_ENV="${LLM_WIKI_VENV}"
     if command -v uv &>/dev/null; then
       uv pip install --python "${LLM_WIKI_VENV}/bin/python3" youtube-transcript-api --quiet >&2 \
         || { echo "錯誤：youtube-transcript-api 安裝失敗（uv）" >&2; exit 1; }
@@ -53,6 +67,8 @@ if ! python3 -c "import youtube_transcript_api" 2>/dev/null; then
       "${LLM_WIKI_VENV}/bin/python3" -m pip install youtube-transcript-api --quiet >&2 \
         || { echo "錯誤：youtube-transcript-api 安裝失敗（pip）" >&2; exit 1; }
     fi
+    rmdir "${LLM_WIKI_VENV_LOCK}" 2>/dev/null
+    trap - EXIT
   fi
 fi
 
